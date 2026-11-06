@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trắc nghiệm Khu vực Mỹ La-tinh</title>
+<style>
+  :root {
+    --primary: #1a73e8;
+    --primary-dark: #0d47a1;
+    --correct: #2e7d32;
+    --wrong: #c62828;
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --border: #e0e0e0;
+    --text: #212121;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 16px;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  header {
+    background: linear-gradient(135deg, #1565c0, #0d47a1);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+  }
+  header p {
+    opacity: 0.9;
+    font-size: 0.95rem;
+  }
+  .controls {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .controls label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+  }
+  .controls input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+  }
+  .btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn:hover { background: var(--primary-dark); }
+  .btn:active { transform: scale(0.97); }
+  .btn.secondary {
+    background: #546e7a;
+  }
+  .btn.secondary:hover { background: #37474f; }
+  .btn.success {
+    background: var(--correct);
+  }
+  .btn.danger {
+    background: var(--wrong);
+  }
+  .section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin: 28px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--primary);
+  }
+  .question-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 4px solid var(--primary);
+    transition: box-shadow 0.2s;
+  }
+  .question-card:hover {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  }
+  .question-card.answered-correct {
+    border-left-color: var(--correct);
+  }
+  .question-card.answered-wrong {
+    border-left-color: var(--wrong);
+  }
+  .q-number {
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: #fafafa;
+  }
+  .option:hover {
+    border-color: var(--primary);
+    background: #e3f2fd;
+  }
+  .option.selected {
+    border-color: var(--primary);
+    background: #e3f2fd;
+  }
+  .option.correct {
+    border-color: var(--correct);
+    background: #e8f5e9;
+  }
+  .option.wrong {
+    border-color: var(--wrong);
+    background: #ffebee;
+  }
+  .option input {
+    margin-top: 3px;
+    accent-color: var(--primary);
+    flex-shrink: 0;
+  }
+  .option-label {
+    font-weight: 600;
+    min-width: 22px;
+  }
+  .true-false .option {
+    padding: 8px 12px;
+  }
+  .feedback {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct {
+    background: #e8f5e9;
+    color: var(--correct);
+    border: 1px solid #a5d6a7;
+  }
+  .feedback.wrong {
+    background: #ffebee;
+    color: var(--wrong);
+    border: 1px solid #ef9a9a;
+  }
+  .score-bar {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .score-bar.show { display: flex; }
+  .score-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .score-text span {
+    color: var(--primary);
+  }
+  footer {
+    text-align: center;
+    margin-top: 32px;
+    padding: 16px;
+    color: #78909c;
+    font-size: 0.85rem;
+  }
+  @media (max-width: 600px) {
+    body { padding: 10px; }
+    header h1 { font-size: 1.25rem; }
+    .controls { flex-direction: column; align-items: stretch; }
+    .btn { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>KHU VỰC MỸ LA-TINH</h1>
+    <p>Trắc nghiệm Địa lí – Nhiều phương án &amp; Đúng/Sai</p>
+  </header>
+
+  <div class="controls">
+    <label>
+      <input type="checkbox" id="shuffleQuestions"> Đảo thứ tự câu hỏi
+    </label>
+    <label>
+      <input type="checkbox" id="shuffleOptions"> Đảo thứ tự đáp án
+    </label>
+    <button class="btn" id="btnApply">Áp dụng &amp; Làm mới</button>
+    <button class="btn secondary" id="btnReset">Làm lại (giữ thứ tự hiện tại)</button>
+    <button class="btn success" id="btnCheck">Kiểm tra đáp án</button>
+    <button class="btn danger" id="btnShowAll">Hiện tất cả đáp án</button>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div class="score-text">Kết quả: <span id="scoreValue">0/0</span></div>
+    <button class="btn secondary" id="btnHideScore">Ẩn kết quả</button>
+  </div>
+
+  <div id="quizContainer"></div>
+
+  <footer>
+    Nguồn: Đề trắc nghiệm Địa lí – Khu vực Mỹ La-tinh<br>
+    Không thêm câu ngoài • Giữ nguyên nội dung gốc
+  </footer>
+</div>
+
+<script>
+// ===================== DỮ LIỆU CÂU HỎI (giữ nguyên thứ tự gốc) =====================
+const originalQuestions = [
+  // ========== I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN ==========
+  // 1. NHẬN BIẾT
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 1. NHẬN BIẾT",
+    type: "mc",
+    text: "Phía đông khu vực Mỹ La-tinh giáp với",
+    options: [
+      { key: "A", text: "Thái Bình Dương." },
+      { key: "B", text: "Ấn Độ Dương." },
+      { key: "C", text: "Đại Tây Dương." },
+      { key: "D", text: "Nam Đại Dương." }
+    ],
+    correct: "C"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 1. NHẬN BIẾT",
+    type: "mc",
+    text: "Phía tây khu vực Mỹ La-tinh giáp với",
+    options: [
+      { key: "A", text: "Thái Bình Dương." },
+      { key: "B", text: "Ấn Độ Dương." },
+      { key: "C", text: "Đại Tây Dương." },
+      { key: "D", text: "Nam Đại Dương." }
+    ],
+    correct: "A"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 1. NHẬN BIẾT",
+    type: "mc",
+    text: "Bộ phận nào sau đây không thuộc phạm vi lãnh thổ khu vực Mỹ La-tinh?",
+    options: [
+      { key: "A", text: "Bắc Mỹ" },
+      { key: "B", text: "Eo đất Trung Mỹ." },
+      { key: "C", text: "Quần đảo Ca-ri-bê." },
+      { key: "D", text: "Lục địa Nam Mỹ" }
+    ],
+    correct: "A"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 1. NHẬN BIẾT",
+    type: "mc",
+    text: "Mỹ La-tinh nằm giữa hai đại dương lớn là",
+    options: [
+      { key: "A", text: "Đại Tây Dương và Ấn Độ Dương." },
+      { key: "B", text: "Bắc Băng Dương và Ấn Độ Dương." },
+      { key: "C", text: "Đại Tây Dương và Thái Bình Dương." },
+      { key: "D", text: "Thái Bình Dương và Bắc Băng Dương." }
+    ],
+    correct: "C"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 1. NHẬN BIẾT",
+    type: "mc",
+    text: "Khu vực Mỹ La-tinh gồm",
+    options: [
+      { key: "A", text: "Mê-hi-cô, Trung và Bắc Mỹ, các quần đảo trong biển Ca-ri-bê." },
+      { key: "B", text: "Mê-hi-cô, Trung và Nam Mỹ, các quần đảo trong biển Ca-ri-bê." },
+      { key: "C", text: "Mê-hi-cô, Trung và Nam Mỹ, quần đảo Ăng-ti, kênh đào Xuy-ê." },
+      { key: "D", text: "Mê-hi-cô, Trung và Bắc Mỹ, kênh đào Xuy-ê và kênh Pa-na-ma." }
+    ],
+    correct: "B"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 1. NHẬN BIẾT",
+    type: "mc",
+    text: "Phía bắc khu vực Mỹ La-tinh tiếp giáp với",
+    options: [
+      { key: "A", text: "Hoa Kỳ." },
+      { key: "B", text: "Ca-na-đa." },
+      { key: "C", text: "quần đảo Ăng-ti lớn." },
+      { key: "D", text: "quần đảo Ăng-ti nhỏ." }
+    ],
+    correct: "A"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 1. NHẬN BIẾT",
+    type: "mc",
+    text: "Quần đảo Ăng-ti nằm ở",
+    options: [
+      { key: "A", text: "Thái Bình Dương." },
+      { key: "B", text: "Đại Tây Dương." },
+      { key: "C", text: "biển Ca-ri-bê." },
+      { key: "D", text: "vịnh Ca-li-phooc-ni-a." }
+    ],
+    correct: "C"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 1. NHẬN BIẾT",
+    type: "mc",
+    text: "Dân cư Mỹ La-tinh có đặc điểm nào sau đây?",
+    options: [
+      { key: "A", text: "Gia tăng dân số thấp." },
+      { key: "B", text: "Tỉ suất nhập cư lớn" },
+      { key: "C", text: "Cơ cấu dân số vàng." },
+      { key: "D", text: "Dân số đang trẻ hóa." }
+    ],
+    correct: "C"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 1. NHẬN BIẾT",
+    type: "mc",
+    text: "Thảm thực vật tiêu biểu ở khu vực Mỹ La-tinh là",
+    options: [
+      { key: "A", text: "rừng nhiệt đới." },
+      { key: "B", text: "rừng thưa." },
+      { key: "C", text: "rừng lá kim." },
+      { key: "D", text: "rừng lá rộng ôn đới." }
+    ],
+    correct: "A"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 1. NHẬN BIẾT",
+    type: "mc",
+    text: "Đô thị nào có số dân lớn nhất trong các đô thị sau đây?",
+    options: [
+      { key: "A", text: "La-ha-ba-na." },
+      { key: "B", text: "Xan-hô-xê." },
+      { key: "C", text: "Xao Pao-lô." },
+      { key: "D", text: "Ca-ra-cát." }
+    ],
+    correct: "C"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 1. NHẬN BIẾT",
+    type: "mc",
+    text: "Khu vực Mỹ La-tinh có",
+    options: [
+      { key: "A", text: "dân số ít, cơ cấu dân số rất già." },
+      { key: "B", text: "gia tăng dân số rất cao, dân trẻ." },
+      { key: "C", text: "dân số đông và cơ cấu già hóa." },
+      { key: "D", text: "gia tăng dân số rất nhỏ, dân già." }
+    ],
+    correct: "C"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 1. NHẬN BIẾT",
+    type: "mc",
+    text: "Dầu mỏ tập trung chủ yếu ở nơi nào sau đây của khu vực Mỹ La-tinh?",
+    options: [
+      { key: "A", text: "Vê-nê-đu-ê-la và vùng biển Ca-ri-bê." },
+      { key: "B", text: "Các đảo trên quần đảo Ăng-ti Lớn." },
+      { key: "C", text: "Các đảo trên quần đảo Ăng-ti Nhỏ." },
+      { key: "D", text: "Khu vực ở phía tây dãy núi An-đét." }
+    ],
+    correct: "A"
+  },
+
+  // 2. THÔNG HIỂU
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 2. THÔNG HIỂU",
+    type: "mc",
+    text: "Phát biểu nào sau đây không đúng khi nói về vị trí địa lí và lãnh thổ khu vực Mỹ La-tinh?",
+    options: [
+      { key: "A", text: "Trải dài trên nhiều vĩ độ." },
+      { key: "B", text: "Nằm hoàn toàn ở bán cầu Tây." },
+      { key: "C", text: "Không có đường xích đạo đi qua." },
+      { key: "D", text: "Tách biệt với các châu lục khác." }
+    ],
+    correct: "C"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 2. THÔNG HIỂU",
+    type: "mc",
+    text: "Khí hậu xích đạo quanh năm nóng ẩm có ở khu vực nào sau đây ở khu vực Mỹ La-tinh?",
+    options: [
+      { key: "A", text: "Toàn bộ phần phía Bắc của Nam Mỹ." },
+      { key: "B", text: "Phía tây đồng bằng A-ma-đôn." },
+      { key: "C", text: "Sơn nguyên Bra-xin." },
+      { key: "D", text: "Vùng núi cao lục địa Nam Mỹ." }
+    ],
+    correct: "B"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 2. THÔNG HIỂU",
+    type: "mc",
+    text: "Khu vực Mỹ La-tinh có nhiều thuận lợi trong phát triển kinh tế do vị trí tiếp giáp với",
+    options: [
+      { key: "A", text: "EU." },
+      { key: "B", text: "Nhật Bản." },
+      { key: "C", text: "Trung Quốc." },
+      { key: "D", text: "Hoa Kỳ." }
+    ],
+    correct: "D"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 2. THÔNG HIỂU",
+    type: "mc",
+    text: "Phần lớn lãnh thổ khu vực Mỹ La-tinh nằm ở trong vùng có khí hậu",
+    options: [
+      { key: "A", text: "nhiệt đới và cận xích đạo." },
+      { key: "B", text: "ôn đới và cận nhiệt đới." },
+      { key: "C", text: "cận nhiệt đới và nhiệt đới." },
+      { key: "D", text: "cận xích đạo và xích đạo." }
+    ],
+    correct: "C"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 2. THÔNG HIỂU",
+    type: "mc",
+    text: "Dân cư Mỹ La-tinh thuận lợi về",
+    options: [
+      { key: "A", text: "cung cấp nguồn lao động và thị trường tiêu thụ rộng." },
+      { key: "B", text: "đáp ứng lao động trình độ cao và nhiều ở các đô thị." },
+      { key: "C", text: "lực lượng lao động nông thôn đông đảo, văn hóa cao." },
+      { key: "D", text: "số người trong độ tuổi lao động nhiều, dân trí rất cao." }
+    ],
+    correct: "A"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 2. THÔNG HIỂU",
+    type: "mc",
+    text: "Mỹ La-tinh có nền văn hóa độc đáo, đa dạng chủ yếu do",
+    options: [
+      { key: "A", text: "có nhiều thành phần dân tộc." },
+      { key: "B", text: "có người bản địa và da đen." },
+      { key: "C", text: "nhiều quốc gia nhập cư đến." },
+      { key: "D", text: "nhiều lứa tuổi cùng hòa hợp." }
+    ],
+    correct: "A"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 2. THÔNG HIỂU",
+    type: "mc",
+    text: "Thành phần chiếm tỉ lệ lớn nhất trong dân cư Mỹ La-tinh là người",
+    options: [
+      { key: "A", text: "da đen." },
+      { key: "B", text: "da trắng." },
+      { key: "C", text: "da vàng." },
+      { key: "D", text: "da đỏ." }
+    ],
+    correct: "B"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 2. THÔNG HIỂU",
+    type: "mc",
+    text: "Vấn đề dân cư - xã hội đáng quan tâm nhất ở Mỹ La-tinh là",
+    options: [
+      { key: "A", text: "có nhiều siêu đô thị đông đúc." },
+      { key: "B", text: "tỉ lệ thất nghiệp ở thành thị cao." },
+      { key: "C", text: "dân nông thôn vào đô thị đông." },
+      { key: "D", text: "chênh lệch giàu nghèo rất lớn." }
+    ],
+    correct: "D"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 2. THÔNG HIỂU",
+    type: "mc",
+    text: "Hình thức tổ chức sản xuất nông nghiệp chủ yếu ở khu vực Mỹ La-tinh là",
+    options: [
+      { key: "A", text: "hộ gia đình." },
+      { key: "B", text: "hợp tác xã." },
+      { key: "C", text: "trang trại." },
+      { key: "D", text: "du canh du cư." }
+    ],
+    correct: "C"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 2. THÔNG HIỂU",
+    type: "mc",
+    text: "Sản phẩm nông nghiệp nổi bật nhất của Mỹ La-tinh là",
+    options: [
+      { key: "A", text: "lương thực." },
+      { key: "B", text: "cây công nghiệp." },
+      { key: "C", text: "thực phẩm." },
+      { key: "D", text: "gia súc." }
+    ],
+    correct: "B"
+  },
+
+  // 3. VẬN DỤNG
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 3. VẬN DỤNG",
+    type: "mc",
+    text: "Kinh tế Mỹ La-tinh phát triển thiếu ổn định không phải là do",
+    options: [
+      { key: "A", text: "phụ thuộc nhiều vào nước khác, nợ nước ngoài lớn." },
+      { key: "B", text: "tình hình chính trị bất ổn, ảnh hưởng của dịch bệnh." },
+      { key: "C", text: "điều kiện tự nhiên khó khăn, ít tài nguyên thiên nhiên." },
+      { key: "D", text: "duy trì cơ cấu xã hội phong kiến trong thời gian dài." }
+    ],
+    correct: "C"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 3. VẬN DỤNG",
+    type: "mc",
+    text: "Nguyên nhân chủ yếu làm kinh tế nhiều nước ở Mỹ Latinh hiện nay giảm sút là",
+    options: [
+      { key: "A", text: "thể chế còn yếu kém, vấn nạn tham nhũng tràn lan." },
+      { key: "B", text: "tập trung cho khai khoáng và xuất khẩu tài nguyên." },
+      { key: "C", text: "đại dịch COVID-19 và người nông dân không có đất." },
+      { key: "D", text: "đô thị hóa tự phát, lạm phát và tham nhũng nhiều." }
+    ],
+    correct: "A"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 3. VẬN DỤNG",
+    type: "mc",
+    text: "Kinh tế Mỹ La tinh phát triển thiếu ổn định không do nguyên nhân nào sau đây?",
+    options: [
+      { key: "A", text: "Tỉ lệ người nghèo cao và có sự chênh lệch lớn." },
+      { key: "B", text: "Phụ thuộc nước ngoài về vốn, công nghệ, thị trường." },
+      { key: "C", text: "Sự bất ổn về chính trị, xã hội trong thời gian dài." },
+      { key: "D", text: "Xung đột xã hội xuất hiện ở nhiều quốc gia." }
+    ],
+    correct: "A"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 3. VẬN DỤNG",
+    type: "mc",
+    text: "Đồng bằng nào sau đây ở Mỹ La-tinh nằm trong đới khí hậu ôn hòa?",
+    options: [
+      { key: "A", text: "Pam-pa." },
+      { key: "B", text: "Ô-ri-nô-cô." },
+      { key: "C", text: "A-ma-đôn." },
+      { key: "D", text: "La-nốt." }
+    ],
+    correct: "A"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 3. VẬN DỤNG",
+    type: "mc",
+    text: "Phát biểu nào sau đây đúng về sông, hồ của khu vực Mỹ La-tinh?",
+    options: [
+      { key: "A", text: "Có ít sông lớn nhưng có nhiều hồ lớn." },
+      { key: "B", text: "Nguồn cung cấp nước chủ yếu là mưa." },
+      { key: "C", text: "Nguồn cung cấp nước chủ yếu là băng." },
+      { key: "D", text: "Sông ngòi khá dày đặc, đều ngắn và dốc." }
+    ],
+    correct: "B"
+  },
+
+  // 4. VẬN DỤNG CAO
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 4. VẬN DỤNG CAO",
+    type: "mc",
+    text: "Khu vực Mỹ La-tinh có kinh tế còn chậm phát triển chủ yếu do",
+    options: [
+      { key: "A", text: "chính trị thiếu ổn định, dịch bệnh, nợ nước ngoài nhiều." },
+      { key: "B", text: "bạo lực và tệ nạn ma túy, dân trí chưa cao, tham nhũng." },
+      { key: "C", text: "lạm phát, nạn tham nhũng, tỉ lệ thất nghiệp còn khá lớn." },
+      { key: "D", text: "quản lí yếu, gắn kết trong khu vực yếu, nạn tham nhũng." }
+    ],
+    correct: "A"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 4. VẬN DỤNG CAO",
+    type: "mc",
+    text: "Các đồng bằng ven vịnh Mê-hi-cô có thuận lợi chủ yếu để phát triển những ngành nào sau đây?",
+    options: [
+      { key: "A", text: "Khai thác quặng sắt, chăn nuôi, du lịch." },
+      { key: "B", text: "Khai thác dầu khí, đánh bắt cá, du lịch." },
+      { key: "C", text: "Khai thác vàng, chăn nuôi, lâm nghiệp." },
+      { key: "D", text: "Khai thác dầu khí, trồng trọt và du lịch." }
+    ],
+    correct: "D"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 4. VẬN DỤNG CAO",
+    type: "mc",
+    text: "Đồng bằng Pam-pa có thuận lợi chủ yếu để phát triển",
+    options: [
+      { key: "A", text: "trồng cây lâu năm, nuôi bò sữa, đánh bắt thủy sản." },
+      { key: "B", text: "trồng lúa, chăn nuôi gia súc lớn, khai thác dầu khí." },
+      { key: "C", text: "trồng cây ăn quả, chăn nuôi gia cầm, khai thác khí." },
+      { key: "D", text: "trồng lúa gạo, nuôi gia cầm, các nhà máy thủy điện." }
+    ],
+    correct: "B"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 4. VẬN DỤNG CAO",
+    type: "mc",
+    text: "Thiên nhiên dãy núi An-đét có nhiều thuận lợi để phát triển",
+    options: [
+      { key: "A", text: "khai khoáng, nuôi hải sản, thủy điện, du lịch." },
+      { key: "B", text: "khai khoáng, thủy điện, trồng trọt và du lịch." },
+      { key: "C", text: "khai khoáng, đánh bắt cá, chăn nuôi, du lịch." },
+      { key: "D", text: "khai khoáng, thủy điện, chăn nuôi và du lịch." }
+    ],
+    correct: "D"
+  },
+  {
+    section: "I. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN NHIỀU LỰA CHỌN – 4. VẬN DỤNG CAO",
+    type: "mc",
+    text: "Các vấn đề xã hội tác động mạnh đến sự phát triển kinh tế của khu vực Mỹ La-tinh là",
+    options: [
+      { key: "A", text: "bất ổn chính trị, bạo lực, tỉ suất tử cao, lạm phát, thất nghiệp." },
+      { key: "B", text: "tỉ suất sinh cao, bạo lực, tệ nạn ma túy, lạm phát, thất nghiệp." },
+      { key: "C", text: "bất ổn chính trị, bạo lực, tệ nạn ma túy, lạm phát, thất nghiệp." },
+      { key: "D", text: "dân đô thị đông, bạo lực, tệ nạn ma túy, lạm phát, thất nghiệp." }
+    ],
+    correct: "C"
+  },
+
+  // ========== PHẦN II: TRẮC NGHIỆM ĐÚNG SAI ==========
+  {
+    section: "PHẦN II: TRẮC NGHIỆM ĐÚNG SAI",
+    type: "tf",
+    text: "Lãnh thổ Mỹ La Tinh rộng lớn và trải dài trên nhiều vĩ độ nên khu vực này có nhiều đới và kiểu khí hậu khác nhau. Đới khí hậu xích đạo và cận xích đạo nằm ở quần đảo Ăng ti, đồng bằng La- nốt và đồng bằng Amazon với nhiệt độ nóng quanh năm và lượng mưa lớn, thuận lợi cho phát triển nông nghiệp và rừng…",
+    statements: [
+      { key: "a", text: "Đồng bằng Amazon chủ yếu thuộc đới khí hậu nhiệt gió mùa.", correct: false },
+      { key: "b", text: "Hoang mạc Atacama là khu vực có khí hậu khô hạn nhất Mỹ La Tinh.", correct: true },
+      { key: "c", text: "Rừng Amazon là rừng mưa nhiệt đới lớn nhất thế giới vì có đất đai rộng, lượng mưa và độ ẩm lớn.", correct: true },
+      { key: "d", text: "Lãnh thổ Mỹ La Tinh rộng lớn và trải dài trên nhiều vĩ độ nên nhiên nhiên có sự phân hoá Bắc Nam.", correct: true }
+    ],
+    note: "→ Đáp án: b,c,d đúng; a sai."
+  },
+  {
+    section: "PHẦN II: TRẮC NGHIỆM ĐÚNG SAI",
+    type: "tf",
+    text: "Lãnh thổ Mỹ La-tinh rộng lớn và trải dài trên nhiều vĩ độ nên khu vực này có nhiều đới và kiểu khí hậu khác nhau. Đới khí hậu xích đạo và cận xích đạo nằm ở quần đảo Ăng-ti, sơn nguyên Guy-a-na, đồng bằng La-nốt và đồng bằng A-ma-đôn với nhiệt độ nóng quanh năm có lượng mưa lớn. Đới khí hậu nhiệt đới nằm ở eo đất Trung Mỹ và phía nam đồng A-ma-đôn có nhiệt độ nóng quanh năm và lượng mưa tăng dần từ Tây sang Đông. Phía Nam lãnh thổ có khí hậu cận nhiệt (mùa hạ nóng, mùa đông ẩm) và ôn đới hải dương (mùa hạ mát mùa đông không quá lạnh)",
+    statements: [
+      { key: "a", text: "Đặc điểm về lãnh thổ tạo nên sự đa dạng về khí hậu của Mỹ La-tinh.", correct: true },
+      { key: "b", text: "Phần lớn lãnh thổ Mỹ La-tinh có khí hậu ôn hòa, ẩm ướt.", correct: false },
+      { key: "c", text: "Khí hậu Mỹ La-tinh thuận lợi để phát triển nền nông nghiệp nhiệt đới.", correct: true },
+      { key: "d", text: "Phía Nam Mỹ La-tinh thuận lợi để trồng các cây công nghiệp cận nhiệt đới.", correct: true }
+    ],
+    note: "→ Đáp án: a,c,d đúng; b sai."
+  },
+  {
+    section: "PHẦN II: TRẮC NGHIỆM ĐÚNG SAI",
+    type: "tf",
+    text: "Cho bảng số liệu: CHỈ SỐ XÃ HỘI KHU VỰC MỸ LATINH, GIAI ĐOẠN 2000 - 2020",
+    table: [
+      ["Chỉ tiêu", "2000", "2010", "2015", "2020"],
+      ["Chỉ số phát triển con người (HDI)", "0,689", "0,733", "0,758", "0,755"],
+      ["Tuổi thọ trung bình (tuổi)", "71,7", "74,1", "75,0", "75,7"],
+      ["Tỉ lệ dân số từ 15 tuổi trở lên biết chữ (%)", "89,0", "91,6", "93,1", "94,5"],
+      ["GNI/người (USD/người theo giá hiện hành)", "4 155,0", "8 040,8", "9 122,3", "7601,1"]
+    ],
+    statements: [
+      { key: "a", text: "Chỉ số HDI của khu vực Mỹ La Tinh thuộc mức trung bình trên thế giới.", correct: false },
+      { key: "b", text: "Chỉ số GNI đầu người Mỹ La Tinh thuộc nhóm thu nhập cao.", correct: false },
+      { key: "c", text: "Chỉ số HDI không có sự chênh lệch giữa các nước trong khu vực Mỹ La Tinh.", correct: false },
+      { key: "d", text: "Các chỉ xã hội khá cao phản ánh trình độ phát triển kinh tế khu vực Mỹ La Tinh thuộc nhóm nước đang phát triển.", correct: true }
+    ],
+    note: "→ Đáp án: d đúng; a,b,c sai."
+  },
+  {
+    section: "PHẦN II: TRẮC NGHIỆM ĐÚNG SAI",
+    type: "tf",
+    text: "Trong quá trình đô thị hóa mạnh mẽ, các nước Châu Mỹ Latinh đã tạo ra xu hướng tập trung dân số tại các đô thị khiến nhu cầu về nhà ở tăng lên nhanh chóng. Tại một số nước Châu Mỹ Latinh như Brazil, Argentina…, trong hơn một nửa thế kỷ trở lại đây, quá trình đô thị hoá tốc độ cao đã khiến cho hầu hết lượng dân số đổ dồn về thành phố. Dân số nghèo tại đô thị gia tăng đã tạo ra sự leo thang về giá cả nhà ở và đất đai, đồng thời cũng tạo nên những áp lực to lớn đối với việc xây dựng nhà ở tại đô thị. Trong những đô thị đông đúc này, dưới tác động của những nhân tố khác nhau như dân số nghèo, giá nhà tăng cao… vấn đề thiếu thốn nhà ở trở thành “trọng bệnh” của đô thị.",
+    statements: [
+      { key: "a", text: "Ổn định việc làm, không gian cư trú rộng, thu nhập cao.", correct: false },
+      { key: "b", text: "Thất nghiệp đông, thu nhập thấp, giá nhà ở tại các đô thị leo thang.", correct: true },
+      { key: "c", text: "Lao động chủ yếu là làm thuê, mức sống thấp, điều kiện sống thấp.", correct: true },
+      { key: "d", text: "Tỉ lệ thiếu việc làm cao, dân trí thấp, thu nhập khá tốt.", correct: false }
+    ],
+    note: "→ Đáp án: b,c đúng; a,d sai."
+  },
+
+  // ========== PHẦN III: CÂU TRẢ LỜI NGẮN ==========
+  {
+    section: "PHẦN III: CÂU TRẮC NGHIỆM YÊU CẦU TRẢ LỜI NGẮN",
+    type: "sa",
+    text: "Biết diện tích của Mĩ La tinh là 20111,5 nghìn km², dân số là 659300 nghìn người (năm 2022). Hãy cho biết mật độ dân số của Mĩ La tinh năm 2022 là bao nhiêu người/ km². (làm tròn kết quả đến chữ số thập phân thứ nhất của người/ km²).",
+    answer: "32,8",
+    note: "→ Đáp án: 32,8"
+  },
+  {
+    section: "PHẦN III: CÂU TRẮC NGHIỆM YÊU CẦU TRẢ LỜI NGẮN",
+    type: "sa",
+    text: "Biết tổng GDP của Bra-xin năm 2021 là 1609 tỉ USD, tỉ trọng khu vực Công nghiệp, xây dựng trong cơ cấu GDP của Bra-xin chiếm 18,9%. Hãy cho biết giá trị khu vực Công nghiệp, xây dựng của Bra-xin năm 2021 là bao nhiêu tỉ USD (làm tròn kết quả đến hàng đơn vị của tỉ USD).",
+    answer: "304",
+    note: "→ Đáp án: 304"
+  },
+  {
+    section: "PHẦN III: CÂU TRẮC NGHIỆM YÊU CẦU TRẢ LỜI NGẮN",
+    type: "sa",
+    text: "Biết diện tích của khu vực Mĩ La tinh khoảng 20 triệu km², diện tích rừng năm 2020 là 9,32 triệu km². Hãy cho biết tỉ lệ che phủ rừng của khu vực Mĩ La tinh là bao nhiêu (%). (làm tròn kết quả đến chữ số thập phân thứ nhất của %).",
+    answer: "46,6",
+    note: "→ Đáp án: 46,6"
+  },
+  {
+    section: "PHẦN III: CÂU TRẮC NGHIỆM YÊU CẦU TRẢ LỜI NGẮN",
+    type: "sa",
+    text: "Cho bảng số liệu: SỐ DÂN THEO NHÓM TUỔI CỦA ACHENTINA, NĂM 2017 (Đơn vị: triệu người)",
+    table: [
+      ["Năm", "2017"],
+      ["Từ 0 đến 14 tuổi", "11 202 462"],
+      ["Từ 15 đến 64 tuổi", "28 035 921"],
+      ["Từ 65 tuổi trở lên", "4 860 589"]
+    ],
+    text2: "Căn cứ vào bảng số liệu, tính tỉ trọng nhóm tuổi từ 0 đến 14 tuổi trong tổng số dân Achentina. (lấy kết quả đến chữ số thập phân thứ nhất của %)",
+    answer: "25,4",
+    note: "→ Đáp án: 25,4"
+  },
+  {
+    section: "PHẦN III: CÂU TRẮC NGHIỆM YÊU CẦU TRẢ LỜI NGẮN",
+    type: "sa",
+    text: "Năm 2019, Mỹ la tinh đón 202 triệu khách du lịch quốc tế và doanh thu từ khách quốc tế đạt 75.600 triệu USD. Hãy tính chi tiêu bình quân của mỗi lượt khách quốc tế. (làm tròn kết quả đến hàng đơn vị của USD/NGƯỜI).",
+    answer: "374",
+    note: "→ Đáp án: 374"
+  }
+];
+
+// ===================== LOGIC =====================
+let currentQuestions = [];
+let userAnswers = {};
+
+function deepClone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function prepareQuestions(shuffleQ, shuffleO) {
+  let qs = deepClone(originalQuestions);
+  if (shuffleQ) {
+    qs = shuffleArray(qs);
+  }
+  if (shuffleO) {
+    qs.forEach(q => {
+      if (q.type === "mc") {
+        q.options = shuffleArray(q.options);
+      } else if (q.type === "tf") {
+        q.statements = shuffleArray(q.statements);
+      }
+    });
+  }
+  return qs;
+}
+
+function renderQuiz() {
+  const container = document.getElementById("quizContainer");
+  container.innerHTML = "";
+  userAnswers = {};
+  document.getElementById("scoreBar").classList.remove("show");
+
+  let currentSection = "";
+  currentQuestions.forEach((q, idx) => {
+    if (q.section !== currentSection) {
+      currentSection = q.section;
+      const h = document.createElement("div");
+      h.className = "section-title";
+      h.textContent = currentSection;
+      container.appendChild(h);
+    }
+
+    const card = document.createElement("div");
+    card.className = "question-card";
+    card.id = `q-${idx}`;
+
+    let html = `<div class="q-number">Câu ${idx + 1}</div>`;
+    html += `<div class="q-text">${q.text}</div>`;
+
+    if (q.table) {
+      html += `<div style="overflow-x:auto;margin-bottom:12px"><table style="width:100%;border-collapse:collapse;font-size:0.9rem">`;
+      q.table.forEach((row, rIdx) => {
+        html += "<tr>";
+        row.forEach(cell => {
+          const tag = rIdx === 0 ? "th" : "td";
+          html += `<${tag} style="border:1px solid #ccc;padding:6px 8px;text-align:center;background:${rIdx===0?'#e3f2fd':'#fff'}">${cell}</${tag}>`;
+        });
+        html += "</tr>";
+      });
+      html += "</table></div>";
+    }
+
+    if (q.type === "mc") {
+      html += `<div class="options">`;
+      q.options.forEach(opt => {
+        html += `
+          <label class="option" data-key="${opt.key}">
+            <input type="radio" name="q${idx}" value="${opt.key}">
+            <span class="option-label">${opt.key}.</span>
+            <span>${opt.text}</span>
+          </label>`;
+      });
+      html += `</div>`;
+      html += `<div class="feedback" id="fb-${idx}"></div>`;
+    } else if (q.type === "tf") {
+      html += `<div class="options true-false">`;
+      q.statements.forEach((st, sIdx) => {
+        html += `
+          <div style="margin-bottom:10px;padding:10px;border:1px solid #e0e0e0;border-radius:8px;background:#fafafa">
+            <div style="margin-bottom:6px"><strong>${st.key})</strong> ${st.text}</div>
+            <label style="margin-right:16px;cursor:pointer">
+              <input type="radio" name="q${idx}_${sIdx}" value="true"> Đúng
+            </label>
+            <label style="cursor:pointer">
+              <input type="radio" name="q${idx}_${sIdx}" value="false"> Sai
+            </label>
+          </div>`;
+      });
+      html += `</div>`;
+      html += `<div class="feedback" id="fb-${idx}"></div>`;
+      if (q.note) {
+        html += `<div style="font-size:0.85rem;color:#666;margin-top:6px">${q.note}</div>`;
+      }
+    } else if (q.type === "sa") {
+      if (q.text2) {
+        html += `<div class="q-text" style="margin-top:8px">${q.text2}</div>`;
+      }
+      html += `
+        <div style="margin-top:12px">
+          <input type="text" id="sa-${idx}" placeholder="Nhập đáp án..." 
+            style="width:100%;max-width:280px;padding:10px 14px;border:2px solid #e0e0e0;border-radius:8px;font-size:1rem;">
+        </div>
+        <div class="feedback" id="fb-${idx}"></div>`;
+      if (q.note) {
+        html += `<div style="font-size:0.85rem;color:#666;margin-top:6px">${q.note}</div>`;
+      }
+    }
+
+    card.innerHTML = html;
+    container.appendChild(card);
+
+    // Event listeners for selection highlight
+    if (q.type === "mc") {
+      card.querySelectorAll(".option").forEach(lab => {
+        lab.addEventListener("click", () => {
+          card.querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
+          lab.classList.add("selected");
+        });
+      });
+    }
+  });
+}
+
+function checkAnswers() {
+  let correctCount = 0;
+  let totalCount = 0;
+
+  currentQuestions.forEach((q, idx) => {
+    const card = document.getElementById(`q-${idx}`);
+    const fb = document.getElementById(`fb-${idx}`);
+    fb.classList.remove("show", "correct", "wrong");
+    card.classList.remove("answered-correct", "answered-wrong");
+
+    if (q.type === "mc") {
+      totalCount++;
+      const selected = document.querySelector(`input[name="q${idx}"]:checked`);
+      const userVal = selected ? selected.value : null;
+      const isCorrect = userVal === q.correct;
+
+      // Highlight options
+      card.querySelectorAll(".option").forEach(lab => {
+        lab.classList.remove("correct", "wrong", "selected");
+        const key = lab.dataset.key;
+        if (key === q.correct) {
+          lab.classList.add("correct");
+        } else if (userVal && key === userVal && !isCorrect) {
+          lab.classList.add("wrong");
+        }
+      });
+
+      if (isCorrect) {
+        correctCount++;
+        card.classList.add("answered-correct");
+        fb.textContent = "✓ Đúng!";
+        fb.classList.add("show", "correct");
+      } else {
+        card.classList.add("answered-wrong");
+        fb.textContent = userVal ? `✗ Sai. Đáp án đúng là: ${q.correct}` : `Chưa chọn. Đáp án đúng là: ${q.correct}`;
+        fb.classList.add("show", "wrong");
+      }
+    } else if (q.type === "tf") {
+      let allCorrect = true;
+      let anyAnswered = false;
+      q.statements.forEach((st, sIdx) => {
+        totalCount++;
+        const selected = document.querySelector(`input[name="q${idx}_${sIdx}"]:checked`);
+        if (selected) anyAnswered = true;
+        const userVal = selected ? selected.value === "true" : null;
+        const isCorrect = userVal === st.correct;
+        if (isCorrect) {
+          correctCount++;
+        } else {
+          allCorrect = false;
+        }
+      });
+
+      if (allCorrect && anyAnswered) {
+        card.classList.add("answered-correct");
+        fb.innerHTML = "✓ Tất cả đúng!";
+        fb.classList.add("show", "correct");
+      } else {
+        card.classList.add("answered-wrong");
+        let detail = q.statements.map(st => 
+          `${st.key}: ${st.correct ? "Đúng" : "Sai"}`
+        ).join("; ");
+        fb.innerHTML = `Đáp án: ${detail}`;
+        fb.classList.add("show", "wrong");
+      }
+    } else if (q.type === "sa") {
+      totalCount++;
+      const input = document.getElementById(`sa-${idx}`);
+      const userVal = input ? input.value.trim().replace(",", ".") : "";
+      const correctVal = String(q.answer).replace(",", ".");
+      // Cho phép so sánh linh hoạt (32,8 hoặc 32.8)
+      const isCorrect = userVal === correctVal || userVal === String(q.answer);
+      if (isCorrect) {
+        correctCount++;
+        card.classList.add("answered-correct");
+        fb.textContent = "✓ Đúng!";
+        fb.classList.add("show", "correct");
+      } else {
+        card.classList.add("answered-wrong");
+        fb.textContent = userVal ? `✗ Sai. Đáp án đúng là: ${q.answer}` : `Chưa nhập. Đáp án đúng là: ${q.answer}`;
+        fb.classList.add("show", "wrong");
+      }
+    }
+  });
+
+  const scoreBar = document.getElementById("scoreBar");
+  document.getElementById("scoreValue").textContent = `${correctCount}/${totalCount}`;
+  scoreBar.classList.add("show");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function showAllAnswers() {
+  currentQuestions.forEach((q, idx) => {
+    const card = document.getElementById(`q-${idx}`);
+    const fb = document.getElementById(`fb-${idx}`);
+    fb.classList.remove("show", "correct", "wrong");
+    card.classList.remove("answered-correct", "answered-wrong");
+
+    if (q.type === "mc") {
+      card.querySelectorAll(".option").forEach(lab => {
+        lab.classList.remove("correct", "wrong", "selected");
+        if (lab.dataset.key === q.correct) {
+          lab.classList.add("correct");
+        }
+      });
+      fb.textContent = `Đáp án đúng: ${q.correct}`;
+      fb.classList.add("show", "correct");
+    } else if (q.type === "tf") {
+      let detail = q.statements.map(st => 
+        `<strong>${st.key}</strong>: ${st.correct ? "Đúng" : "Sai"}`
+      ).join(" | ");
+      fb.innerHTML = `Đáp án: ${detail}`;
+      fb.classList.add("show", "correct");
+    } else if (q.type === "sa") {
+      fb.textContent = `Đáp án đúng: ${q.answer}`;
+      fb.classList.add("show", "correct");
+      const input = document.getElementById(`sa-${idx}`);
+      if (input) input.value = q.answer;
+    }
+  });
+}
+
+// Event listeners
+document.getElementById("btnApply").addEventListener("click", () => {
+  const shuffleQ = document.getElementById("shuffleQuestions").checked;
+  const shuffleO = document.getElementById("shuffleOptions").checked;
+  currentQuestions = prepareQuestions(shuffleQ, shuffleO);
+  renderQuiz();
+});
+
+document.getElementById("btnReset").addEventListener("click", () => {
+  renderQuiz();
+});
+
+document.getElementById("btnCheck").addEventListener("click", checkAnswers);
+document.getElementById("btnShowAll").addEventListener("click", showAllAnswers);
+document.getElementById("btnHideScore").addEventListener("click", () => {
+  document.getElementById("scoreBar").classList.remove("show");
+});
+
+// Initial load - no shuffle
+currentQuestions = prepareQuestions(false, false);
+renderQuiz();
+</script>
+</body>
+</html>
